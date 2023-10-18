@@ -5,6 +5,7 @@ import { Self } from "./data/interface";
 import { StateProvider } from "./state";
 import { Home, Login, Schedule } from "./pages";
 import { NoSchedule, NotFound } from "./pages/Error";
+import "./index.css";
 
 const readSelf = (): Self | null => {
   const self = localStorage.getItem("self");

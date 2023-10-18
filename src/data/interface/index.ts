@@ -28,3 +28,5 @@ export interface List<T> {
   perPage: number;
   result: T[];
 }
+
+export type DisplayMode = "day" | "week" | "month";
