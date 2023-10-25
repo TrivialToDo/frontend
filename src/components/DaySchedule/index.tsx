@@ -1,4 +1,5 @@
 // schedule form displayed in day mode
+// TODO: add event button
 
 import { Dayjs } from 'dayjs';
 import { Event } from '../../data/interface';
@@ -9,14 +10,14 @@ import { CaretLeftFilled, CaretRightFilled, ClockCircleFilled, LoadingOutlined }
 import { ScheduleProps } from '../../pages/Schedule';
 
 const EventItem = (e: Event, idx: number, date: Dayjs) => {
-    const upc = checkUpcoming(e.time, date);
+    const upc = checkUpcoming(e.timeStart, date);
     return <Timeline.Item
         key={idx}
         color={upc > 0 ? "grey" : "blue"}
         dot={upc === 0 && <LoadingOutlined />}
     >
         <div style={{ width: "20%", textAlign: "left" }}>
-            {strTime(e.time)}
+            {strTime(e.timeStart)}
         </div>,
         <div style={{ marginBottom: "20px" }}>
             <Collapse items={

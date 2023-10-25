@@ -64,32 +64,3 @@ export const request = async <T>(
     data: res,
   };
 };
-
-export type TFetcher<T> = { status: number, data: T };
-
-export const fetcher = async (key: { url: string, jwt?: string }) => {
-  const resp = await fetch(key.url,
-    typeof key.jwt === "string" ?
-      { headers: new Headers({ Authorization: `Bearer ${key.jwt}` }) }
-      :
-      undefined);
-
-  let res;
-  try {
-    res = await resp.json();
-  } catch (e) {
-    res = null;
-  }
-
-  if (!resp.ok) {
-    throw {
-      status: resp.status,
-      msg: res.msg,
-    };
-  }
-
-  return {
-    status: resp.status,
-    data: res,
-  };
-};

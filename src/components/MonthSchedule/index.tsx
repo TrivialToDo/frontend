@@ -2,18 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { ScheduleProps } from "../../pages/Schedule";
-import { MockMonthEvents, strDate, strTime } from "../../utils/date";
+import { MockMonthEvents, strDate } from "../../utils/date";
 import { Event } from "../../data/interface";
-import { Card, Button, Calendar, Badge, Popover, Divider } from "antd";
-import { CaretLeftFilled, CaretRightFilled, ClockCircleFilled } from "@ant-design/icons";
+import { Card, Button, Calendar } from "antd";
+import { CaretLeftFilled, CaretRightFilled } from "@ant-design/icons";
 import { MonthStr } from "../../data/constants";
 import { Dayjs } from "dayjs";
+import { EventJSX } from "../../utils/eventRender";
 
 export const MonthSchedule = (props: ScheduleProps) => {
     const date = props.date;
     const [eventList, setEventList] = useState<Event[][]>(MockMonthEvents(strDate(date)));
     const [loading, setLoading] = useState<boolean>(false);
-    console.log(strDate(props.date));
+
     useEffect(() => {
         // request event list of the day
         console.log("get event list:", strDate(date));
@@ -39,31 +40,7 @@ export const MonthSchedule = (props: ScheduleProps) => {
             return <></>;
         }
         const dayEvents = eventList[d.date() - 1];
-        return (
-            <div style={{ textAlign: "center" }}>
-                {dayEvents.map((e, idx) => (
-                    <div key={idx} >
-                        <Popover
-                            content={
-                                <div style={{ display: "flex", flexDirection: "column" }}>
-                                    {e.description}
-                                    <Divider plain style={{ marginTop: "6px", marginBottom: "4px" }} />
-                                    <div style={{ color: "grey", display: "flex", justifyContent: "flex-end" }}>
-                                        <ClockCircleFilled style={{ color: "grey", marginRight: "4px" }} />
-                                        {strTime(e.time)}
-                                    </div>
-                                </div>
-                            }
-                            title={e.title}
-                            trigger="click"
-                        >
-                            <Badge color={d.isSame(props.date) ? "blue" : "grey"} style={{ marginRight: "3px" }} />
-                            {e.title}
-                        </Popover>
-                    </div >
-                ))}
-            </div >
-        );
+        return <EventJSX events={dayEvents} date={props.date} />;
     };
 
     return <>

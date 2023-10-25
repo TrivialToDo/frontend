@@ -3,8 +3,10 @@ export interface Event {
     title: string;
     description: string;
     repeat: "never" | "daily" | "weekly" | "monthly";
-    time: Time;
+    timeStart: Time;
+    timeEnd?: Time;
     dateStart: string;
+    dateEnd?: string;
 }
 
 export interface Time {

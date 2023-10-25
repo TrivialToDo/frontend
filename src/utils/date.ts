@@ -76,7 +76,7 @@ function rand(l: number, r: number, d?: string, ofs?: number): number {
 }
 
 export const MockEvent = (d: string, h: number, m: number): Event => {
-    return { hash: `${d}T${h}:${m}-hash`, title: "untitled", description: "none", repeat: "never", time: { Hour: h, Minute: m }, dateStart: d };
+    return { hash: `${d}T${h}:${m}-hash`, title: "untitled", description: "none", repeat: "never", timeStart: { Hour: h, Minute: m }, dateStart: d };
 }
 
 export const MockDayEvents = (d: string): Event[] => {
@@ -86,8 +86,8 @@ export const MockDayEvents = (d: string): Event[] => {
         list.push(MockEvent(d, rand(0, 23, d, i), rand(0, 59, d, i)));
     }
     list.sort((a, b) => {
-        if (a.time.Hour < b.time.Hour || (a.time.Hour == b.time.Hour && a.time.Minute < b.time.Minute)) return -1;
-        if (a.time.Hour == b.time.Hour && a.time.Minute == b.time.Minute) return 0;
+        if (a.timeStart.Hour < b.timeStart.Hour || (a.timeStart.Hour == b.timeStart.Hour && a.timeStart.Minute < b.timeStart.Minute)) return -1;
+        if (a.timeStart.Hour == b.timeStart.Hour && a.timeStart.Minute == b.timeStart.Minute) return 0;
         return 1;
     });
     // return [
