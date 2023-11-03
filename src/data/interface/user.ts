@@ -9,6 +9,6 @@ export interface UserDetail extends User {
 }
 
 export interface Self {
-  user: User;
+  user?: User;
   jwt: string;
 }
