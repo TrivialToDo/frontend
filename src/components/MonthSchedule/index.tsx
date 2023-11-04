@@ -8,7 +8,8 @@ import { Card, Button, Calendar } from "antd";
 import { CaretLeftFilled, CaretRightFilled } from "@ant-design/icons";
 import { MonthStr } from "../../data/constants";
 import { Dayjs } from "dayjs";
-import { EventJSX } from "../../utils/eventRender";
+import EventThumbnail from "../EventThumbnail";
+import { getEventList } from "../../utils/event";
 
 export const MonthSchedule = (props: ScheduleProps) => {
     const date = props.date;
@@ -16,10 +17,17 @@ export const MonthSchedule = (props: ScheduleProps) => {
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        // request event list of the day
-        console.log("get event list:", strDate(date));
-        setEventList(MockMonthEvents(strDate(date)));
-    }, [date]);
+        // request event list of the month
+
+        const str = strDate(date);
+        console.log("get event list:", str);
+        if (props.jwt.length === 0) {
+            setEventList(MockMonthEvents(str));
+        }
+        else {
+            getEventList(str, props.jwt, "month", setLoading, setEventList, props.setErrMsg);
+        }
+    }, [date, props.jwt, props.setErrMsg]);
 
     const onChangeMonth = (type: "forward" | "backward") => {
         if (type === "forward") {
@@ -40,7 +48,7 @@ export const MonthSchedule = (props: ScheduleProps) => {
             return <></>;
         }
         const dayEvents = eventList[d.date() - 1];
-        return <EventJSX events={dayEvents} date={props.date} />;
+        return <EventThumbnail events={dayEvents} date={props.date} />;
     };
 
     return <>

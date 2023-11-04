@@ -1,10 +1,10 @@
 import { Badge, Divider, Popover } from "antd";
-import { Event } from "../data/interface";
+import { Event } from "../../data/interface";
 import { Dayjs } from "dayjs";
 import { ClockCircleFilled } from "@ant-design/icons";
-import { strTime } from "./date";
+import { strTime } from "../../utils/date";
 
-export const EventJSX = (props: { events: Event[], date?: Dayjs, hour?: number }) => {
+const EventThumbnail = (props: { events: Event[], date?: Dayjs, hour?: number }) => {
     const strD = props.date ? props.date.format("YYYY-MM-DD") : undefined;
     const hour = props.hour === undefined ? -1 : props.hour;
     return <div style={{ textAlign: "center" }}>
@@ -36,3 +36,5 @@ export const EventJSX = (props: { events: Event[], date?: Dayjs, hour?: number }
         }
     </div >;
 };
+
+export default EventThumbnail;

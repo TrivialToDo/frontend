@@ -8,6 +8,7 @@ import { MockDayEvents, checkUpcoming, strDate, strTime } from '../../utils/date
 import { Card, Button, Timeline, Collapse } from "antd";
 import { CaretLeftFilled, CaretRightFilled, ClockCircleFilled, LoadingOutlined } from "@ant-design/icons";
 import { ScheduleProps } from '../../pages/Schedule';
+import { getEventList } from '../../utils/event';
 
 const EventItem = (e: Event, idx: number, date: Dayjs) => {
     const upc = checkUpcoming(e.timeStart, date);
@@ -36,14 +37,21 @@ const EventItem = (e: Event, idx: number, date: Dayjs) => {
 export const DaySchedule = (props: ScheduleProps) => {
     const date = props.date;
     const dateStr = strDate(props.date);
-    const [eventList, setEventList] = useState<Event[]>(MockDayEvents(dateStr));
+    const [eventList, setEventList] = useState<Event[][]>([MockDayEvents(dateStr)]);
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         // request event list of the day
-        console.log("get event list:", strDate(date));
-        setEventList(MockDayEvents(strDate(date)));
-    }, [date]);
+        const str = strDate(date);
+        console.log("get event list:", str);
+        if (props.jwt.length === 0) {
+            setEventList([MockDayEvents(str)]);
+        }
+        else {
+            getEventList(str, props.jwt, "day", setLoading, setEventList, props.setErrMsg);
+        }
+    }, [date, props.jwt, props.setErrMsg]);
+
 
     const onChangeDate = (type: "forward" | "backward") => {
         if (type === "forward") {
@@ -84,7 +92,7 @@ export const DaySchedule = (props: ScheduleProps) => {
                     <Timeline.Item key={-1} dot={<ClockCircleFilled />} color="blue">
                         <div style={{ width: "20%", textAlign: "left", height: "3vh" }} />
                     </Timeline.Item>
-                    {eventList.map((e: Event, idx: number) => EventItem(e, idx, props.date))}
+                    {eventList[0].map((e: Event, idx: number) => EventItem(e, idx, props.date))}
                     <Timeline.Item key={-2} color="grey">
                         <div style={{ width: "20%", textAlign: "left" }}>
                         </div>

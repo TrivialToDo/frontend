@@ -4,13 +4,14 @@
 
 import { ScheduleProps } from "../../pages/Schedule";
 import { Card, Button, Table } from "antd"
-import { CaretLeftFilled, CaretRightFilled, ClockCircleFilled } from "@ant-design/icons";
+import { CaretLeftFilled, CaretRightFilled } from "@ant-design/icons";
 import { MonthStr, WeekStr } from "../../data/constants";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Event } from "../../data/interface";
 import { MockWeekEvents, getMonday, strDate } from "../../utils/date";
 import type { ColumnsType } from 'antd/es/table';
-import { EventJSX } from "../../utils/eventRender";
+import EventThumbnail from "../EventThumbnail";
+import { getEventList } from "../../utils/event";
 
 interface TableData {
     key: string;
@@ -21,17 +22,27 @@ interface TableData {
 export const WeekSchedule = (props: ScheduleProps) => {
     // return <>TODO: week schedule</>;
     const [date, setDate] = useState(getMonday(props.date));
-    const [eventList, setEventList] = useState<Event[][]>();
+    const [eventList, setEventList] = useState<Event[][]>(MockWeekEvents(strDate(date)));
     const [loading, setLoading] = useState<boolean>(false);
     // console.log(strDate(date));
     const [data, setData] = useState<TableData[]>();
 
     useEffect(() => {
         // request event list of the day
-        setDate(getMonday(date));
-        console.log("get event list:", strDate(date));
-        setEventList(MockWeekEvents(strDate(date)));
+        const mon = getMonday(props.date);
+        setDate(mon);
     }, [props.date]);
+
+    useEffect(() => {
+        const str = strDate(date);
+        console.log("get event list:", str);
+        if (props.jwt.length === 0) {
+            setEventList(MockWeekEvents(str));
+        }
+        else {
+            getEventList(str, props.jwt, "week", setLoading, setEventList, props.setErrMsg);
+        }
+    }, [date, props.jwt, props.setErrMsg]);
 
     useEffect(() => {
         if (!eventList) return;
@@ -46,7 +57,7 @@ export const WeekSchedule = (props: ScheduleProps) => {
                         list.push(e);
                     }
                 }
-                tmp[i] = <EventJSX events={list} hour={idx} />;
+                tmp[i] = <EventThumbnail events={list} hour={idx} />;
             }
             return tmp;
         }));
