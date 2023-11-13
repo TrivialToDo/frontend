@@ -8,7 +8,7 @@ import { WeekSchedule } from "../../components/WeekSchedule";
 import { MonthSchedule } from "../../components/MonthSchedule";
 import { useAppState } from "../../state";
 import { Alert } from "antd";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export interface ScheduleProps {
     date: Dayjs;
@@ -21,7 +21,7 @@ export const Page = () => {
     const [mode, setMode] = useState<DisplayMode>("week");
     const [date, setDate] = useState<Dayjs>(dayjs());
     const { self } = useAppState();
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [jwt, setJwt] = useState<string>("");
     const [errMsg, setErrMsg] = useState<string>();
 
@@ -36,6 +36,14 @@ export const Page = () => {
         }
     }, [self, setJwt]);
 
+    useEffect(() => {
+        if (errMsg === "invalid JWT" || errMsg === "token expired") {
+            console.error("not logged in");
+            // alert("请先登录");
+            // navigate("/login");
+        }
+    }, [errMsg, navigate]);
+
 
     return <div style={{ display: "flex", flexDirection: "column" }}>
         {/* schedule page */}
@@ -43,7 +51,7 @@ export const Page = () => {
         <div style={{ justifyContent: "center", display: "flex", marginTop: "5vh" }}>
             {
                 errMsg && <Alert
-                    message={errMsg}
+                    message={`- ${errMsg}`}
                     type="info"
                     style={{ width: "80%" }}
                 />

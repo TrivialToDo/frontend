@@ -71,7 +71,7 @@ export const request = async <T>(
   }
   console.log(headers);
 
-  const response = await fetch(url, { method, headers, body, credentials: 'same-origin' });
+  const response = await fetch(url, { method, headers, body });
 
   let res;
   try {
@@ -82,6 +82,6 @@ export const request = async <T>(
 
   return {
     status: response.status,
-    data: res,
+    data: res.data,
   };
 };
