@@ -4,6 +4,8 @@ import { Self } from "./data/interface";
 interface AppState {
     self: Self | null;
     setSelf: (self: Self | null) => void;
+    csrf_token: string;
+    setToken: (token: string) => void;
 }
 
 const StateContext = createContext<AppState | null>(null);

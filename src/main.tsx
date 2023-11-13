@@ -30,6 +30,8 @@ const App = () => {
     rawSetSelf(self);
   };
 
+  const [token, setToken] = useState<string>("");
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -53,7 +55,7 @@ const App = () => {
 
   return (
     <React.StrictMode>
-      <StateProvider self={self} setSelf={setSelf}>
+      <StateProvider self={self} setSelf={setSelf} csrf_token={token} setToken={setToken}>
         <RouterProvider router={router} />
       </StateProvider>
     </React.StrictMode>
