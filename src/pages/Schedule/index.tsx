@@ -67,6 +67,6 @@ export const Page = () => {
             <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
         </div>}
         <ModeSelect mode={mode} setMode={setMode} date={date} setDate={setDate} />
-        <AddSchedule />
+        <AddSchedule date={date} />
     </div>;
 }
