@@ -7,7 +7,7 @@ import { AddSchedule } from "../../components/AddSchedule";
 import { WeekSchedule } from "../../components/WeekSchedule";
 import { MonthSchedule } from "../../components/MonthSchedule";
 import { useAppState } from "../../state";
-import { Alert } from "antd";
+import { Alert, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 
 export interface ScheduleProps {
@@ -24,6 +24,7 @@ export const Page = () => {
     const navigate = useNavigate();
     const [jwt, setJwt] = useState<string>("");
     const [errMsg, setErrMsg] = useState<string>();
+    const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (self === null) {
@@ -45,28 +46,30 @@ export const Page = () => {
     }, [errMsg, navigate]);
 
 
-    return <div style={{ display: "flex", flexDirection: "column" }}>
-        {/* schedule page */}
-        {/* <div>{`mode:${mode}  you selected: ${date.format("YYYY-MM-DD")}`}</div> */}
-        <div style={{ justifyContent: "center", display: "flex", marginTop: "5vh" }}>
-            {
-                errMsg && <Alert
-                    message={`- ${errMsg}`}
-                    type="info"
-                    style={{ width: "80%" }}
-                />
-            }
+    return <Spin spinning={loading} size="large">
+        <div style={{ display: "flex", flexDirection: "column" }}>
+            {/* schedule page */}
+            {/* <div>{`mode:${mode}  you selected: ${date.format("YYYY-MM-DD")}`}</div> */}
+            <div style={{ justifyContent: "center", display: "flex", marginTop: "5vh" }}>
+                {
+                    errMsg && <Alert
+                        message={`- ${errMsg}`}
+                        type="info"
+                        style={{ width: "80%" }}
+                    />
+                }
+            </div>
+            {mode === "day" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
+                <DaySchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
+            </div>}
+            {mode === "week" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
+                <WeekSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
+            </div>}
+            {mode === "month" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
+                <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
+            </div>}
+            <ModeSelect mode={mode} setMode={setMode} date={date} setDate={setDate} />
+            <AddSchedule date={date} setLoading={setLoading} jwt={jwt} />
         </div>
-        {mode === "day" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-            <DaySchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
-        </div>}
-        {mode === "week" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-            <WeekSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
-        </div>}
-        {mode === "month" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-            <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
-        </div>}
-        <ModeSelect mode={mode} setMode={setMode} date={date} setDate={setDate} />
-        <AddSchedule date={date} />
-    </div>;
+    </Spin>;
 }

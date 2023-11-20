@@ -3,24 +3,27 @@
 import { Button, DatePicker, Drawer, FloatButton, Form, Input, Modal, Select, Space, message } from "antd";
 import { PlusOutlined, CloseOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import dayjs, { Dayjs } from "dayjs";
-import { Time } from "../../data/interface";
+import { Dayjs } from "dayjs";
+import { Event, Time } from "../../data/interface";
 import TextArea from "antd/es/input/TextArea";
 import { WeekStr } from "../../data/constants";
 import { strDate, strTime } from "../../utils/date";
+import { isOk, request } from "../../utils/network";
 
 interface AddScheduleProps {
     date: Dayjs;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    jwt: string;
 }
 
 export const AddSchedule = (props: AddScheduleProps) => {
     const [open, setOpen] = useState<boolean>(false);
-    const NewScheduleDrawer = ({ date: defaultDate }: AddScheduleProps) => {
+    const NewScheduleDrawer = ({ date: defaultDate, jwt: jwt, setLoading: setLoading }: AddScheduleProps) => {
         const [date, setDate] = useState<Dayjs>(defaultDate);
-        const [repeat, setRepeat] = useState<string>("never");
+        const [repeat, setRepeat] = useState<"never" | "daily" | "weekly" | "monthly">("never");
         const [title, setTitle] = useState<string>();
         const [description, setDescription] = useState<string>();
-        const [timeStart, setTimeStart] = useState<Time>({ Hour: 0, Minute: 0 });
+        const [timeStart, setTimeStart] = useState<Time>({ Hour: defaultDate.hour(), Minute: defaultDate.minute() });
         const [timeEnd, setTimeEnd] = useState<Time>();
         const [dateEnd, setDateEnd] = useState<Dayjs>();
 
@@ -39,13 +42,36 @@ export const AddSchedule = (props: AddScheduleProps) => {
             }
             setShowConfirm(true);
         };
-        const onSubmit = () => {
-            // TODO: POST
-
-
-            message.info("Added to your schedule");
+        const onSubmit = async () => {
+            setLoading(true);
             setShowConfirm(false);
+            const event: Event = {
+                hash: "",
+                title: title ? title : "Untitled",
+                description: description ? description : "",
+                repeat: repeat,
+                timeStart: timeStart,
+                timeEnd: timeEnd,
+                dateStart: date.format("YYYY-MM-DD"),
+                dateEnd: dateEnd?.format("YYYY-MM-DD"),
+
+            };
+            console.log("add event to schedule:", event);
+            type NewScheduleResp = {
+                hash: string;
+            };
+            const resp = await request<NewScheduleResp>(
+                "/api/event/new",
+                "POST",
+                { event: event }, jwt
+            );
+            setLoading(false);
+            if (!isOk(resp)) {
+                message.info(`Request failed: ${resp.data.msg}`);
+                return;
+            }
             setOpen(false);
+            message.info(`Event ${resp.data.hash.substring(0, 7)} added to your schedule`);
         };
         return <div style={{
             display: "flex",
@@ -96,7 +122,11 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 <Form.Item label="Repeat">
                     <Select
                         defaultValue={"never"}
-                        onChange={(e) => { setRepeat(e) }}>
+                        onChange={(e) => {
+                            if (e === "never" || e === "weekly" || e === "daily" || e === "monthly") {
+                                setRepeat(e);
+                            }
+                        }}>
                         <Select.Option value="never">never</Select.Option>
                         <Select.Option value="daily">daily</Select.Option>
                         <Select.Option value="weekly">weekly</Select.Option>
@@ -137,6 +167,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                             }
                         }}
                         showToday={false}
+                        showSecond={false}
                     />
                 </Form.Item>
                 <Form.Item style={{ marginTop: "5rem" }}>
@@ -161,17 +192,11 @@ export const AddSchedule = (props: AddScheduleProps) => {
             closeIcon={<CloseOutlined />}
             extra={
                 <Space>
-                    {/* <Button
-                        onClick={() => setOpen(false)}
-                        icon={<CloseOutlined />}
-                        ghost
-                        type="primary"
-                    /> */}
                     <CloseOutlined onClick={() => { setOpen(false) }} />
                 </Space>
             }
         >
-            <NewScheduleDrawer date={props.date} />
+            <NewScheduleDrawer date={props.date} setLoading={props.setLoading} jwt={props.jwt} />
         </Drawer >
         <FloatButton
             shape="circle"
