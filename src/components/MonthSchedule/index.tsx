@@ -48,7 +48,10 @@ export const MonthSchedule = (props: ScheduleProps) => {
             return <></>;
         }
         const dayEvents = eventList[d.date() - 1];
-        return <EventThumbnail events={dayEvents} date={props.date} jwt={props.jwt} setLoading={props.setLoading} />;
+        return <EventThumbnail events={dayEvents} date={props.date} jwt={props.jwt}
+            setLoading={props.setLoading}
+            setAddBarOpen={props.setOpenAddBar}
+            setEventBase={props.setEventBase} />;
     };
 
     return <>
@@ -60,7 +63,7 @@ export const MonthSchedule = (props: ScheduleProps) => {
                         type="text"
                         onClick={() => onChangeMonth("backward")}
                     />
-                    <span>{`${props.date.year()} ${MonthStr[props.date.month() + 1]}`}</span>
+                    <div style={{ fontSize: "1.1rem" }}>{`${props.date.year()} ${MonthStr[props.date.month() + 1]}`}</div>
                     <Button
                         icon={<CaretRightFilled />}
                         type="text"

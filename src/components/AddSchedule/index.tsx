@@ -3,7 +3,7 @@
 import { Button, DatePicker, Drawer, FloatButton, Form, Input, Modal, Select, Space, TimePicker, message } from "antd";
 import { PlusOutlined, CloseOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { Event, Time } from "../../data/interface";
 import TextArea from "antd/es/input/TextArea";
 import { WeekStr } from "../../data/constants";
@@ -14,19 +14,25 @@ interface AddScheduleProps {
     date: Dayjs;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     jwt: string;
+    eventBase?: Event;
+    open: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const AddSchedule = (props: AddScheduleProps) => {
-    const [open, setOpen] = useState<boolean>(false);
+    // const [open, setOpen] = useState<boolean>(false);
+    const setOpen = props.setOpen;
+    const open = props.open;
     const NewScheduleDrawer = ({ date: defaultDate, jwt: jwt, setLoading: setLoading }: AddScheduleProps) => {
-        const [date, setDate] = useState<Dayjs>(defaultDate);
-        const [repeat, setRepeat] = useState<"never" | "daily" | "weekly" | "monthly">("never");
-        const [title, setTitle] = useState<string>();
-        const [description, setDescription] = useState<string>();
-        const [timeStart, setTimeStart] = useState<Time>({ Hour: defaultDate.hour(), Minute: defaultDate.minute() });
-        const [timeEnd, setTimeEnd] = useState<Time>();
-        const [reminder, setReminder] = useState<Time>();
-        const [dateEnd, setDateEnd] = useState<Dayjs>();
+        const [date, setDate] = useState<Dayjs>(props.eventBase ? dayjs(props.eventBase.dateStart) : defaultDate);
+        const [repeat, setRepeat] = useState<"never" | "daily" | "weekly" | "monthly">(props.eventBase ? props.eventBase.repeat : "never");
+        const [title, setTitle] = useState<string | undefined>(props.eventBase?.title);
+        const [description, setDescription] = useState<string | undefined>(props.eventBase?.description);
+        const [timeStart, setTimeStart] = useState<Time>(props.eventBase ? props.eventBase.timeStart
+            : { Hour: defaultDate.hour(), Minute: defaultDate.minute() });
+        const [timeEnd, setTimeEnd] = useState<Time | undefined>(props.eventBase?.timeEnd);
+        const [reminder, setReminder] = useState<Time | undefined>(props.eventBase?.reminder);
+        const [dateEnd, setDateEnd] = useState<Dayjs | undefined>(props.eventBase ? dayjs(props.eventBase.dateEnd) : undefined);
 
         // const [errMsg, setErrMsg] = useState<string>();
         const [showConfirm, setShowConfirm] = useState<boolean>(false);
@@ -57,22 +63,39 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 dateEnd: dateEnd?.format("YYYY-MM-DD"),
                 reminder: reminder,
             };
-            console.log("add event to schedule:", event);
             type NewScheduleResp = {
                 hash: string;
             };
-            const resp = await request<NewScheduleResp>(
-                "/api/event/new",
-                "POST",
-                { event: event }, jwt
-            );
-            setLoading(false);
-            if (!isOk(resp)) {
-                message.info(`Request failed: ${resp.data.msg}`);
-                return;
+            if (props.eventBase) {
+                console.log("modify event: ", props.eventBase.hash, event);
+                const resp = await request<NewScheduleResp>(
+                    "/api/event/modify",
+                    "POST",
+                    { hash: props.eventBase.hash, event: event }, jwt
+                );
+                setLoading(false);
+                if (!isOk(resp)) {
+                    message.info(`Request failed: ${resp.data.msg}`);
+                    return;
+                }
+                setOpen(false);
+                message.info(`Event ${resp.data.hash.substring(0, 7)} modified`);
             }
-            setOpen(false);
-            message.info(`Event ${resp.data.hash.substring(0, 7)} added to your schedule`);
+            else {
+                console.log("add event to schedule:", event);
+                const resp = await request<NewScheduleResp>(
+                    "/api/event/new",
+                    "POST",
+                    { event: event }, jwt
+                );
+                setLoading(false);
+                if (!isOk(resp)) {
+                    message.info(`Request failed: ${resp.data.msg}`);
+                    return;
+                }
+                setOpen(false);
+                message.info(`Event ${resp.data.hash.substring(0, 7)} added to your schedule`);
+            }
         };
         return <div style={{
             display: "flex",
@@ -158,7 +181,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                             }
                         }}
                         showToday={false}
-                        defaultValue={date}
+                        defaultValue={dayjs(`${date.format("YYYY-MM-DD")} ${strTime(timeStart)}`)}
                     />
                 </Form.Item>
                 <Form.Item label="End at">
@@ -179,7 +202,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                     />
                 </Form.Item>
                 <Form.Item label="Remind me at">
-                    <TimePicker defaultValue={date} format="HH:mm" onChange={(e) => {
+                    <TimePicker defaultValue={reminder ? dayjs(strTime(reminder)) : undefined} format="HH:mm" onChange={(e) => {
                         if (e) {
                             setReminder({ Hour: e.hour(), Minute: e.minute() });
                         }
@@ -211,7 +234,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 </Space>
             }
         >
-            <NewScheduleDrawer date={props.date} setLoading={props.setLoading} jwt={props.jwt} />
+            <NewScheduleDrawer date={props.date} setLoading={props.setLoading} jwt={props.jwt} open={open} setOpen={setOpen} />
         </Drawer >
         <FloatButton
             shape="circle"

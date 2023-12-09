@@ -62,6 +62,14 @@ export const checkUpcoming = (eventTime: Time, eventDate: Dayjs) => {
     return diff > 0 ? 1 : -1;
 };
 
+export const checkNow = (eventTime: Time, eventDate: Dayjs) => {
+    const date = dayjs(`${strDate(eventDate)}T${strTime(eventTime)}:00`);
+    const diff = date.diff(dayjs(), "minute");
+    if (diff < 60 && diff >= 0) {
+        return 0;
+    }
+    return diff > 0 ? 1 : -1;
+};
 
 function rand(l: number, r: number, d?: string, ofs?: number): number {
     if (d === undefined || ofs === undefined) {

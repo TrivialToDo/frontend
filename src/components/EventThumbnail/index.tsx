@@ -13,6 +13,8 @@ interface EventThumbnailProps {
     hour?: number;
     jwt: string;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setEventBase: React.Dispatch<React.SetStateAction<Event | undefined>>;
+    setAddBarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EventThumbnail = (props: EventThumbnailProps) => {
@@ -70,7 +72,9 @@ const EventThumbnail = (props: EventThumbnailProps) => {
                             <div style={{ marginLeft: "0.1rem" }}>{e.title}</div>
                             <div style={{ display: "flex", justifyContent: "flex-end", fontSize: "1.2rem", marginTop: "0.2rem" }}>
                                 <Link onClick={() => {
-
+                                    props.setEventBase(e);
+                                    props.setAddBarOpen(true);
+                                    console.log("attemping to edit: ", e.hash);
                                 }} target="_blank" style={{ marginRight: "0.8rem" }}>
                                     Edit
                                 </Link>

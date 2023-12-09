@@ -57,11 +57,14 @@ export const WeekSchedule = (props: ScheduleProps) => {
                         list.push(e);
                     }
                 }
-                tmp[i] = <EventThumbnail events={list} hour={idx} jwt={props.jwt} setLoading={props.setLoading} />;
+                tmp[i] = <EventThumbnail events={list} hour={idx} jwt={props.jwt}
+                    setLoading={props.setLoading}
+                    setAddBarOpen={props.setOpenAddBar}
+                    setEventBase={props.setEventBase} />;
             }
             return tmp;
         }));
-    }, [eventList, props.jwt, props.setLoading]);
+    }, [eventList, props]);
 
     const onChangeWeek = (type: "forward" | "backward") => {
         if (type === "forward") {
@@ -102,7 +105,7 @@ export const WeekSchedule = (props: ScheduleProps) => {
                         type="text"
                         onClick={() => onChangeWeek("backward")}
                     />
-                    <span>{`${props.date.year()} ${MonthStr[props.date.month() + 1]}`}</span>
+                    <div style={{ fontSize: "1.1rem" }}>{`${props.date.year()} ${MonthStr[props.date.month() + 1]}`}</div>
                     <Button
                         icon={<CaretRightFilled />}
                         type="text"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ModeSelect } from "../../components/ModeSelect";
 import dayjs, { Dayjs } from "dayjs";
-import { DisplayMode } from "../../data/interface";
+import { DisplayMode, Event } from "../../data/interface";
 import { DaySchedule } from "../../components/DaySchedule";
 import { AddSchedule } from "../../components/AddSchedule";
 import { WeekSchedule } from "../../components/WeekSchedule";
@@ -16,6 +16,8 @@ export interface ScheduleProps {
     jwt: string;
     setErrMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    setOpenAddBar: React.Dispatch<React.SetStateAction<boolean>>;
+    setEventBase: React.Dispatch<React.SetStateAction<Event | undefined>>;
 }
 
 export const Page = () => {
@@ -26,6 +28,8 @@ export const Page = () => {
     const [jwt, setJwt] = useState<string>("");
     const [errMsg, setErrMsg] = useState<string>();
     const [loading, setLoading] = useState<boolean>(false);
+    const [openAddBar, setOpenAddBar] = useState<boolean>(false);
+    const [eventBase, setEventBase] = useState<Event>();
 
     useEffect(() => {
         if (self === null) {
@@ -61,16 +65,16 @@ export const Page = () => {
                 }
             </div>
             {mode === "day" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-                <DaySchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} />
+                <DaySchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} setOpenAddBar={setOpenAddBar} setEventBase={setEventBase} />
             </div>}
             {mode === "week" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-                <WeekSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} />
+                <WeekSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} setOpenAddBar={setOpenAddBar} setEventBase={setEventBase} />
             </div>}
             {mode === "month" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-                <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} />
+                <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} setOpenAddBar={setOpenAddBar} setEventBase={setEventBase} />
             </div>}
             <ModeSelect mode={mode} setMode={setMode} date={date} setDate={setDate} />
-            <AddSchedule date={date} setLoading={setLoading} jwt={jwt} />
+            <AddSchedule date={date} setLoading={setLoading} jwt={jwt} open={openAddBar} setOpen={setOpenAddBar} eventBase={eventBase} />
         </div>
     </Spin>;
 }
