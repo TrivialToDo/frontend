@@ -64,7 +64,7 @@ export const DaySchedule = (props: ScheduleProps) => {
             open={showConfirm}
             onOk={() => { deleteEvent(e.hash, props.jwt, props.setLoading, setErrMsg, setSelectEvent, setBLoading); }}
             onCancel={() => { setShowConfirm(false); }}
-            okButtonProps={{ loading: bloading, children: <div>delete</div> }}
+            okButtonProps={{ loading: bloading, title: "delete" }}
         >
             <div style={{ display: "flex", flexDirection: "row", marginTop: "0.7rem" }}>Are you sure to delete {
                 <div style={{ fontWeight: "bolder", marginLeft: "0.3rem", marginRight: "0.3rem" }}>
@@ -124,8 +124,7 @@ export const DaySchedule = (props: ScheduleProps) => {
                 // status === "wait" ? <ClockCircleFilled /> : undefined
             }
             status={status}
-        >
-        </Steps.Step >;
+        />;
     };
     const date = props.date;
     const dateStr = strDate(props.date);
