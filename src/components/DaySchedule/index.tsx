@@ -193,12 +193,13 @@ export const DaySchedule = (props: ScheduleProps) => {
                     />
                 </div>
             }
-            style={{ width: "80%", overflow: "overlay" }}
+            style={{ width: "70%", overflow: "overlay" }}
             type="inner"
             loading={loading}
             bodyStyle={{ textAlign: "left", width: "100%" }}
+            id="schedule-table"
         >
-            <div style={{ marginTop: "5%", marginBottom: "5%", marginLeft: "10%", marginRight: "10%" }}>
+            <div style={{ marginTop: "5%", marginBottom: "5%", marginLeft: "20%", marginRight: "10%" }}>
                 <DeleteConfirm />
                 <EventProgress />
                 {/* <EventTimeLine /> */}

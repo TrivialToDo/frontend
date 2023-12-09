@@ -1,7 +1,7 @@
 // float button for adding new schedule
 
-import { Button, DatePicker, Drawer, FloatButton, Form, Input, Modal, Select, Space, TimePicker, Tooltip, message } from "antd";
-import { PlusOutlined, CloseOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Divider, Drawer, FloatButton, Form, Input, Modal, Popover, Select, Space, TimePicker, Tooltip, message } from "antd";
+import { PlusOutlined, CloseOutlined, ClockCircleOutlined, CameraOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { Event, Time } from "../../data/interface";
@@ -9,6 +9,8 @@ import TextArea from "antd/es/input/TextArea";
 import { WeekStr } from "../../data/constants";
 import { strDate, strTime } from "../../utils/date";
 import { isOk, request } from "../../utils/network";
+import { takeScreenshot } from "../../utils/screenshot";
+import Link from "antd/es/typography/Link";
 
 interface AddScheduleProps {
     date: Dayjs;
@@ -181,6 +183,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                             }
                         }}
                         showToday={false}
+                        showSecond={false}
                         defaultValue={dayjs(`${date.format("YYYY-MM-DD")} ${strTime(timeStart)}`)}
                     />
                 </Form.Item>
@@ -219,6 +222,19 @@ export const AddSchedule = (props: AddScheduleProps) => {
             </Form>
         </div>;
     };
+    // const [image, setImage] = useState<HTMLImageElement>();
+    const [url, setUrl] = useState<string>();
+    const [link, setLink] = useState<HTMLAnchorElement>();
+
+    const onShot = async () => {
+        const imgUrl = await takeScreenshot();
+        setUrl(imgUrl);
+        console.log(imgUrl);
+        const tempLink = document.createElement('a');
+        tempLink.href = imgUrl ? imgUrl : "";
+        tempLink.download = `snapshot-${props.date.format("YYYY-MM-DD")}.png`;
+        setLink(tempLink);
+    };
     return <>
         <Drawer
             title="New Schedule"
@@ -236,7 +252,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
         >
             <NewScheduleDrawer date={props.date} setLoading={props.setLoading} jwt={props.jwt} open={open} setOpen={setOpen} />
         </Drawer >
-        <Tooltip title="Add new schedule" placement="left" arrow>
+        <Tooltip title="Add new schedule" placement="top" arrow>
             <FloatButton
                 shape="circle"
                 type="primary"
@@ -245,5 +261,38 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 onClick={() => setOpen(true)}
             />
         </Tooltip>
+        <Popover
+            zIndex={998}
+            content={
+                <div style={{ display: "flex", flexDirection: "column", width: "20rem" }}>
+                    <Divider style={{ marginTop: "0.1rem" }} />
+                    <img src={url} />
+                </div >
+            }
+            title={< div style={{ display: "flex", justifyContent: "space-between", fontSize: "1rem" }}>
+                <div style={{ marginLeft: "0.8rem" }}>Schedule Snapshot</div>
+                <div style={{ display: "flex", justifyContent: "flex-end", fontSize: "1.2rem", marginTop: "0.2rem" }}>
+                    <Link onClick={() => {
+                        link?.click();
+                    }} target="_blank" style={{ marginRight: "0.8rem" }}>
+                        Download
+                    </Link>
+                </div >
+            </div>}
+            trigger="click"
+            mouseEnterDelay={0.5}
+            placement="topLeft"
+        // style={{ marginBottom: "1rem" }}
+        >
+            < Tooltip title="Screenshot" placement="top" arrow >
+                <FloatButton
+                    shape="circle"
+                    type="default"
+                    style={{ right: 140 }}
+                    icon={<CameraOutlined />}
+                    onClick={onShot}
+                />
+            </Tooltip >
+        </Popover >
     </>;
 };
