@@ -7,6 +7,7 @@ export interface Event {
     timeEnd?: Time;
     dateStart: string;
     dateEnd?: string;
+    reminder?: Time;
 }
 
 export interface Time {

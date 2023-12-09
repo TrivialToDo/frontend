@@ -57,11 +57,11 @@ export const WeekSchedule = (props: ScheduleProps) => {
                         list.push(e);
                     }
                 }
-                tmp[i] = <EventThumbnail events={list} hour={idx} />;
+                tmp[i] = <EventThumbnail events={list} hour={idx} jwt={props.jwt} setLoading={props.setLoading} />;
             }
             return tmp;
         }));
-    }, [eventList]);
+    }, [eventList, props.jwt, props.setLoading]);
 
     const onChangeWeek = (type: "forward" | "backward") => {
         if (type === "forward") {

@@ -1,6 +1,6 @@
 // float button for adding new schedule
 
-import { Button, DatePicker, Drawer, FloatButton, Form, Input, Modal, Select, Space, message } from "antd";
+import { Button, DatePicker, Drawer, FloatButton, Form, Input, Modal, Select, Space, TimePicker, message } from "antd";
 import { PlusOutlined, CloseOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { Dayjs } from "dayjs";
@@ -25,6 +25,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
         const [description, setDescription] = useState<string>();
         const [timeStart, setTimeStart] = useState<Time>({ Hour: defaultDate.hour(), Minute: defaultDate.minute() });
         const [timeEnd, setTimeEnd] = useState<Time>();
+        const [reminder, setReminder] = useState<Time>();
         const [dateEnd, setDateEnd] = useState<Dayjs>();
 
         // const [errMsg, setErrMsg] = useState<string>();
@@ -54,7 +55,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 timeEnd: timeEnd,
                 dateStart: date.format("YYYY-MM-DD"),
                 dateEnd: dateEnd?.format("YYYY-MM-DD"),
-
+                reminder: reminder,
             };
             console.log("add event to schedule:", event);
             type NewScheduleResp = {
@@ -89,12 +90,19 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 } to your schedule. </div>
                 <div style={{ display: "flex", flexDirection: "row", marginTop: "0.7rem" }}>
                     <ClockCircleOutlined style={{ color: "grey", marginRight: "0.5rem" }} />
-                    <div style={{ color: "grey" }}>Reminds at {strTime(timeStart)}{timeEnd ? ` - ${strTime(timeEnd)}` : ""} {repeat === "never" ? `on ${strDate(date)}`
-                        :
-                        (repeat === "daily" ?
-                            "everyday" : (repeat === "weekly" ?
-                                `every ${WeekStr[date.day() + 1]}` : `every ${date.date()}th`)
-                        )}</div>
+                    <div style={{ color: "grey" }}>
+                        Reminds at
+                        {" "}
+                        {reminder ? strTime(reminder) :
+                            `${strTime(timeStart)}${timeEnd ? ` - ${strTime(timeEnd)}` : ""}`}
+                        {" "}
+                        {repeat === "never" ? `on ${strDate(date)}`
+                            :
+                            (repeat === "daily" ?
+                                "everyday" : (repeat === "weekly" ?
+                                    `every ${WeekStr[date.day() + 1]}` : `every ${date.date()}th`)
+                            )}
+                    </div>
                 </div>
             </Modal>
             <Form
@@ -105,7 +113,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
             >
                 <Form.Item required label="Title">
                     <Input
-                        placeholder="untitled"
+                        placeholder="Enter a title to your event"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                     />
@@ -113,7 +121,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 <Form.Item label="Description">
                     <TextArea
                         rows={4}
-                        placeholder="no description"
+                        placeholder="Enter event description"
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                     // onPressEnter={() => { }}
@@ -170,7 +178,14 @@ export const AddSchedule = (props: AddScheduleProps) => {
                         showSecond={false}
                     />
                 </Form.Item>
-                <Form.Item style={{ marginTop: "5rem" }}>
+                <Form.Item label="Remind me at">
+                    <TimePicker defaultValue={date} format="HH:mm" onChange={(e) => {
+                        if (e) {
+                            setReminder({ Hour: e.hour(), Minute: e.minute() });
+                        }
+                    }} />
+                </Form.Item>
+                <Form.Item style={{ marginTop: "1rem" }}>
                     <Button type="primary" onClick={onCheckForm} style={{ marginLeft: "5rem" }} size="large">
                         Save
                     </Button>

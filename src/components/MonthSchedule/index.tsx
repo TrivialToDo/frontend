@@ -48,7 +48,7 @@ export const MonthSchedule = (props: ScheduleProps) => {
             return <></>;
         }
         const dayEvents = eventList[d.date() - 1];
-        return <EventThumbnail events={dayEvents} date={props.date} />;
+        return <EventThumbnail events={dayEvents} date={props.date} jwt={props.jwt} setLoading={props.setLoading} />;
     };
 
     return <>

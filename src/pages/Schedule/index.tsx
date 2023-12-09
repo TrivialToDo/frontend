@@ -15,6 +15,7 @@ export interface ScheduleProps {
     setDate: React.Dispatch<React.SetStateAction<Dayjs>>;
     jwt: string;
     setErrMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Page = () => {
@@ -60,13 +61,13 @@ export const Page = () => {
                 }
             </div>
             {mode === "day" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-                <DaySchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
+                <DaySchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} />
             </div>}
             {mode === "week" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-                <WeekSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
+                <WeekSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} />
             </div>}
             {mode === "month" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
-                <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} />
+                <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} />
             </div>}
             <ModeSelect mode={mode} setMode={setMode} date={date} setDate={setDate} />
             <AddSchedule date={date} setLoading={setLoading} jwt={jwt} />
