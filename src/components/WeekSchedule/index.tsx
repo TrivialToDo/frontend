@@ -118,7 +118,7 @@ export const WeekSchedule = (props: ScheduleProps) => {
             loading={loading}
             bodyStyle={{ textAlign: "center", width: "100%" }}
         >
-            <div style={{ marginTop: "5%", marginBottom: "5%", marginLeft: "10%", marginRight: "10%" }}>
+            <div style={{ marginTop: "5%", marginBottom: "5%", marginLeft: "10%", marginRight: "10%", textAlign: "center", justifyContent: "center" }}>
                 <Table
                     columns={columns}
                     dataSource={data}

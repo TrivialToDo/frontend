@@ -1,6 +1,6 @@
 // float button for adding new schedule
 
-import { Button, DatePicker, Drawer, FloatButton, Form, Input, Modal, Select, Space, TimePicker, message } from "antd";
+import { Button, DatePicker, Drawer, FloatButton, Form, Input, Modal, Select, Space, TimePicker, Tooltip, message } from "antd";
 import { PlusOutlined, CloseOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
@@ -236,12 +236,14 @@ export const AddSchedule = (props: AddScheduleProps) => {
         >
             <NewScheduleDrawer date={props.date} setLoading={props.setLoading} jwt={props.jwt} open={open} setOpen={setOpen} />
         </Drawer >
-        <FloatButton
-            shape="circle"
-            type="primary"
-            style={{ right: 50 }}
-            icon={<PlusOutlined />}
-            onClick={() => setOpen(true)}
-        />
+        <Tooltip title="Add new schedule" placement="left" arrow>
+            <FloatButton
+                shape="circle"
+                type="primary"
+                style={{ right: 50 }}
+                icon={<PlusOutlined />}
+                onClick={() => setOpen(true)}
+            />
+        </Tooltip>
     </>;
 };

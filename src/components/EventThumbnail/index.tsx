@@ -1,4 +1,4 @@
-import { Divider, Modal, Popover, Tag, message } from "antd";
+import { Divider, Modal, Popover, Tag, Tooltip, message } from "antd";
 import { Event } from "../../data/interface";
 import { Dayjs } from "dayjs";
 import { ClockCircleFilled } from "@ant-design/icons";
@@ -93,19 +93,21 @@ const EventThumbnail = (props: EventThumbnailProps) => {
                             setSelectEvent(v ? e : undefined);
                         }}
                     >
-                        <Tag closeIcon
-                            onClose={(_) => {
-                                _.preventDefault();
-                                setSelectEvent(e);
-                                setShowConfirm(true);
-                                console.log("attemping to delete: ", e.hash);
-                            }}
-                            color={selectEvent?.hash === e.hash ? "#108ee9" : ""}
-                            style={{ height: "1.5rem", alignContent: "center", marginBottom: "0.3rem" }}
-                        >
-                            {/*TODO: tooltip?*/}
-                            {e.title.slice(0, 8)}
-                        </Tag>
+                        <Tooltip title="Click to view & delete" placement="bottom" arrow>
+                            <Tag closeIcon
+                                onClose={(_) => {
+                                    _.preventDefault();
+                                    setSelectEvent(e);
+                                    setShowConfirm(true);
+                                    console.log("attemping to delete: ", e.hash);
+                                }}
+                                color={selectEvent?.hash === e.hash ? "#108ee9" : ""}
+                                style={{ height: "1.5rem", alignContent: "center", marginBottom: "0.3rem" }}
+                            >
+                                {/*TODO: tooltip?*/}
+                                {e.title.slice(0, 8)}
+                            </Tag>
+                        </Tooltip>
                         {/* <Badge color={active ? "blue" : "grey"} style={{ marginRight: "3px" }} /> */}
                         {/* {e.title} */}
                     </Popover>

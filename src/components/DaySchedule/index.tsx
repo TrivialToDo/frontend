@@ -5,7 +5,7 @@ import { Dayjs } from 'dayjs';
 import { Event } from '../../data/interface';
 import { useEffect, useState } from 'react';
 import { MockDayEvents, checkUpcoming, strDate, strTime } from '../../utils/date';
-import { Card, Button, Steps, Modal, message } from "antd";
+import { Card, Button, Steps, Modal, message, Tooltip } from "antd";
 import { CaretLeftFilled, CaretRightFilled, ClockCircleFilled, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ScheduleProps } from '../../pages/Schedule';
 import { deleteEvent, getEventList } from '../../utils/event';
@@ -85,36 +85,40 @@ export const DaySchedule = (props: ScheduleProps) => {
             key={id}
             title={
                 <div style={{ marginLeft: "0.2rem", width: "80rem", display: "flex", flexDirection: "row" }}>
-
                     {selId === id && <div>
-                        <Button shape="circle" style={{ marginLeft: "0.3rem" }} icon={<EditOutlined />}
-                            onClick={() => {
-                                props.setEventBase(e);
-                                props.setOpenAddBar(true);
-                                // TODO: edit
-                            }}
-                        />
+                        <Tooltip title="Edit" placement="top" arrow={false}>
+                            <Button shape="circle" style={{ marginLeft: "0.3rem" }} icon={<EditOutlined />}
+                                onClick={() => {
+                                    props.setEventBase(e);
+                                    props.setOpenAddBar(true);
+                                    // TODO: edit
+                                }}
+                            />
+                        </Tooltip>
                         {/* <Button shape="circle" style={{ marginLeft: "0.5rem" }} icon={<DeleteOutlined />} /> */}
                     </div>}
-                    <div style={{ marginLeft: "1.2rem", fontSize: "1.1rem", fontWeight: "Bolder", marginBottom: "0.5rem" }}>
-                        {`${strTime(e.timeStart)} - ${e.title}`}
-                    </div>
-
-                </div>
+                    <Tooltip title="Click to modify" placement="topLeft">
+                        <div style={{ marginLeft: "1.2rem", fontSize: "1.1rem", fontWeight: "Bolder", marginBottom: "0.5rem" }}>
+                            {`${strTime(e.timeStart)} - ${e.title}`}
+                        </div>
+                    </Tooltip>
+                </div >
             }
             description={
-                <div style={{ marginLeft: "1rem", width: "80rem", marginTop: "1rem", marginBottom: "1.5rem" }}>
+                < div style={{ marginLeft: "1.6rem", width: "80rem", marginTop: "1rem", marginBottom: "1.5rem" }}>
                     {e.description}
-                </div>
+                </div >
             }
 
             icon={selId === id ?
-                <Button shape="circle" icon={<DeleteOutlined />} onClick={
-                    () => {
-                        setSelectEvent(e);
-                        setShowConfirm(true)
-                    }
-                } />
+                <Tooltip title="Delete" placement="top" arrow={false}>
+                    <Button shape="circle" icon={<DeleteOutlined />} onClick={
+                        () => {
+                            setSelectEvent(e);
+                            setShowConfirm(true)
+                        }
+                    } />
+                </Tooltip>
                 :
                 undefined
                 // status === "wait" ? <ClockCircleFilled /> : undefined
