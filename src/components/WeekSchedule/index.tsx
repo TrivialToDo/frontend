@@ -52,8 +52,8 @@ export const WeekSchedule = (props: ScheduleProps) => {
                 const list: Event[] = [];
                 for (let j = 0; j < eventList[i].length; j += 1) {
                     const e = eventList[i][j];
-                    if (e.timeStart.Hour === idx ||
-                        e.timeStart.Hour <= idx && e.timeEnd && e.timeEnd.Hour >= idx) {
+                    if (e.timeStart.hour === idx ||
+                        e.timeStart.hour <= idx && e.timeEnd && e.timeEnd.hour >= idx) {
                         list.push(e);
                     }
                 }

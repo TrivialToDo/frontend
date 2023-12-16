@@ -11,6 +11,6 @@ export interface Event {
 }
 
 export interface Time {
-    Hour: number;
-    Minute: number;
+    hour: number;
+    minute: number;
 }

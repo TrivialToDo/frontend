@@ -53,7 +53,7 @@ const EventThumbnail = (props: EventThumbnailProps) => {
         {
             props.events.map((e, idx) => {
                 // const active = (strD === undefined || (strD === e.dateStart || (strD > e.dateStart && e.dateEnd && strD <= e.dateEnd)))
-                //     && (hour === -1 || (hour === e.timeStart.Hour || (hour > e.timeStart.Hour && e.timeEnd && hour <= e.timeEnd.Hour)));
+                //     && (hour === -1 || (hour === e.timeStart.hour || (hour > e.timeStart.hour && e.timeEnd && hour <= e.timeEnd.hour)));
                 return <div key={idx}>
                     <Popover
                         zIndex={10 + idx}

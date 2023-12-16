@@ -31,7 +31,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
         const [title, setTitle] = useState<string | undefined>(props.eventBase?.title);
         const [description, setDescription] = useState<string | undefined>(props.eventBase?.description);
         const [timeStart, setTimeStart] = useState<Time>(props.eventBase ? props.eventBase.timeStart
-            : { Hour: defaultDate.hour(), Minute: defaultDate.minute() });
+            : { hour: defaultDate.hour(), minute: defaultDate.minute() });
         const [timeEnd, setTimeEnd] = useState<Time | undefined>(props.eventBase?.timeEnd);
         const [reminder, setReminder] = useState<Time | undefined>(props.eventBase?.reminder);
         const [dateEnd, setDateEnd] = useState<Dayjs | undefined>(props.eventBase ? dayjs(props.eventBase.dateEnd) : undefined);
@@ -179,7 +179,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                         onChange={(e) => {
                             if (e) {
                                 setDate(e);
-                                setTimeStart({ Hour: e.hour(), Minute: e.minute() });
+                                setTimeStart({ hour: e.hour(), minute: e.minute() });
                             }
                         }}
                         showToday={false}
@@ -197,7 +197,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                         onChange={(e) => {
                             if (e) {
                                 setDateEnd(e);
-                                setTimeEnd({ Hour: e.hour(), Minute: e.minute() });
+                                setTimeEnd({ hour: e.hour(), minute: e.minute() });
                             }
                         }}
                         showToday={false}
@@ -207,7 +207,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
                 <Form.Item label="Remind me at">
                     <TimePicker defaultValue={reminder ? dayjs(strTime(reminder)) : undefined} format="HH:mm" onChange={(e) => {
                         if (e) {
-                            setReminder({ Hour: e.hour(), Minute: e.minute() });
+                            setReminder({ hour: e.hour(), minute: e.minute() });
                         }
                     }} />
                 </Form.Item>
