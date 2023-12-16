@@ -42,7 +42,7 @@ export const deleteEvent = async (
     setBloading(true);
     console.log("delete event:", hash);
     const resp = await request(
-        `/api/event/delete/${hash}`,
+        `/api/event/${hash}`,
         "DELETE", undefined, jwt
     );
 
