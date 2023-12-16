@@ -205,11 +205,12 @@ export const AddSchedule = (props: AddScheduleProps) => {
                     />
                 </Form.Item>
                 <Form.Item label="Remind me at">
-                    <TimePicker defaultValue={reminder ? dayjs(strTime(reminder)) : undefined} format="HH:mm" onChange={(e) => {
-                        if (e) {
-                            setReminder({ hour: e.hour(), minute: e.minute() });
-                        }
-                    }} />
+                    <TimePicker defaultValue={reminder ? dayjs(strTime(reminder), "HH:mm") : undefined} format="HH:mm"
+                        onChange={(e) => {
+                            if (e) {
+                                setReminder({ hour: e.hour(), minute: e.minute() });
+                            }
+                        }} />
                 </Form.Item>
                 <Form.Item style={{ marginTop: "1rem" }}>
                     <Button type="primary" onClick={onCheckForm} style={{ marginLeft: "5rem" }} size="large">
