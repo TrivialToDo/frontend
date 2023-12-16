@@ -43,7 +43,7 @@ export const deleteEvent = async (
     console.log("delete event:", hash);
     const resp = await request(
         `/api/event/delete/${hash}`,
-        "POST", undefined, jwt
+        "DELETE", undefined, jwt
     );
 
     setSelect(undefined);

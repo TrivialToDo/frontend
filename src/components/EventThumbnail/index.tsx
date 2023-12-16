@@ -24,16 +24,21 @@ const EventThumbnail = (props: EventThumbnailProps) => {
     const [selectEvent, setSelectEvent] = useState<Event>();
     const [bloading, setBLoading] = useState<boolean>(false);
     const [errMsg, setErrMsg] = useState<string>();
+
+    if (errMsg) {
+        message.info(`Failed to delete: ${errMsg}`);
+    }
     const DeleteConfirm = () => {
         const e = selectEvent;
-        // console.log("select event: ", e?.hash);
-        return e && <Modal
+        if (!e) return <></>;
+        // console.log("select event: ", e.hash);
+        return <Modal
             zIndex={999}
             okText={"Delete"}
             open={showConfirm}
-            onOk={() => { deleteEvent(e.hash, props.jwt, props.setLoading, setErrMsg, setSelectEvent, setBLoading) }}
+            onOk={() => { deleteEvent(e.hash, props.jwt, props.setLoading, setErrMsg, setSelectEvent, setBLoading); setSelectEvent(undefined); }}
             onCancel={() => { setShowConfirm(false); setSelectEvent(undefined); }}
-            okButtonProps={{ loading: bloading, children: <div>delete</div> }}
+            okButtonProps={{ loading: bloading, title: "delete" }}
         >
             <div style={{ display: "flex", flexDirection: "row", marginTop: "0.7rem" }}>Are you sure to delete {
                 <div style={{ fontWeight: "bolder", marginLeft: "0.3rem", marginRight: "0.3rem" }}>
@@ -43,9 +48,6 @@ const EventThumbnail = (props: EventThumbnailProps) => {
         </Modal>;
     };
 
-    if (errMsg) {
-        message.info(`Failed to delete: ${errMsg}`);
-    }
     return <div style={{ textAlign: "center" }}>
         {
             showConfirm && <DeleteConfirm />
@@ -53,7 +55,7 @@ const EventThumbnail = (props: EventThumbnailProps) => {
         {
             props.events.map((e, idx) => {
                 // const active = (strD === undefined || (strD === e.dateStart || (strD > e.dateStart && e.dateEnd && strD <= e.dateEnd)))
-                //     && (hour === -1 || (hour === e.timeStart.hour || (hour > e.timeStart.hour && e.timeEnd && hour <= e.timeEnd.hour)));
+                //     && (hour === -1 || (hour === e.timeStart.Hour || (hour > e.timeStart.Hour && e.timeEnd && hour <= e.timeEnd.Hour)));
                 return <div key={idx}>
                     <Popover
                         zIndex={10 + idx}
@@ -89,8 +91,11 @@ const EventThumbnail = (props: EventThumbnailProps) => {
                         </div>}
                         trigger="click"
                         onOpenChange={(v) => {
-                            setShowConfirm(false);
-                            setSelectEvent(v ? e : undefined);
+                            // console.log("??");
+                            if (v) {
+                                setShowConfirm(false);
+                            }
+                            setSelectEvent((showConfirm || v) ? e : undefined);
                         }}
                     >
                         <Tooltip title="Click to view & delete" placement="bottom" arrow>
@@ -101,7 +106,7 @@ const EventThumbnail = (props: EventThumbnailProps) => {
                                     setShowConfirm(true);
                                     console.log("attemping to delete: ", e.hash);
                                 }}
-                                color={selectEvent?.hash === e.hash ? "#108ee9" : ""}
+                                color={(selectEvent && selectEvent.hash === e.hash) ? "#108ee9" : ""}
                                 style={{ height: "1.5rem", alignContent: "center", marginBottom: "0.3rem" }}
                             >
                                 {/*TODO: tooltip?*/}
