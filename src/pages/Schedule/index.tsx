@@ -8,7 +8,9 @@ import { WeekSchedule } from "../../components/WeekSchedule";
 import { MonthSchedule } from "../../components/MonthSchedule";
 import { useAppState } from "../../state";
 import { Alert, Spin, message } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { takeScreenshot } from "../../utils/screenshot";
+import { Screenshot } from "./screenshot";
 
 export interface ScheduleProps {
     date: Dayjs;
@@ -31,6 +33,62 @@ export const Page = () => {
     const [openAddBar, setOpenAddBar] = useState<boolean>(false);
     const [eventBase, setEventBase] = useState<Event>();
 
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const _mode: string | null = searchParams.get("mode");
+    const _date: string | null = searchParams.get("date");
+    const _shot: string | null = searchParams.get("shot");
+    const [shot, setShot] = useState<boolean>(_shot === "true");
+    const [loadShot, setLoadShot] = useState<string>();
+
+    useEffect(() => {
+        if (_mode === null || (_mode !== "day" && _mode !== "week" && _mode !== "month")) {
+            throw new Error("invalid search param");
+        }
+        else {
+            setMode(_mode);
+        }
+        if (_date !== null && !dayjs(_date).isValid()) {
+            throw new Error("invalid search param");
+        }
+        else if (_date !== null) {
+            setDate(dayjs(_date));
+        }
+    }, [setMode, setDate, _mode, _date]);
+
+    function sleep(ms: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    const visitShot = async () => {
+        if (!shot || loading) {
+            return <></>;
+        }
+        setLoading(true);
+        await sleep(2000);
+        const res = await takeScreenshot();
+        if (res === undefined) {
+            message.info("Failed to take screenshot");
+            setLoading(false);
+            return <></>;
+        }
+        const url: string = res;
+        const tempLink = document.createElement('a');
+        tempLink.href = url;
+        tempLink.download = `snapshot-${date.format("YYYY-MM-DD")}.png`;
+        tempLink.click();
+        tempLink.remove();
+        setLoading(false);
+        setLoadShot(url);
+        // navigate("/schedule/screenshot?url=" + url);
+    };
+
+    useEffect(() => {
+        if (shot) {
+            visitShot();
+            setShot(false);
+        }
+    }, [setShot]);
+
     useEffect(() => {
         if (self === null) {
             console.error("not logged in");
@@ -52,6 +110,9 @@ export const Page = () => {
         }
     }, [errMsg, navigate]);
 
+    if (loadShot) {
+        return <Screenshot url={loadShot} />;
+    }
 
     return <Spin spinning={loading} size="large">
         <div style={{ display: "flex", flexDirection: "column" }}>
