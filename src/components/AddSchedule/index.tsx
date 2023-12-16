@@ -267,7 +267,7 @@ export const AddSchedule = (props: AddScheduleProps) => {
             content={
                 <div style={{ display: "flex", flexDirection: "column", width: "20rem" }}>
                     <Divider style={{ marginTop: "0.1rem" }} />
-                    <img src={url} />
+                    <img src={url} style={{ maxHeight: "25rem" }} />
                 </div >
             }
             title={< div style={{ display: "flex", justifyContent: "space-between", fontSize: "1rem" }}>

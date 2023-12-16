@@ -7,7 +7,7 @@ import { AddSchedule } from "../../components/AddSchedule";
 import { WeekSchedule } from "../../components/WeekSchedule";
 import { MonthSchedule } from "../../components/MonthSchedule";
 import { useAppState } from "../../state";
-import { Alert, Spin } from "antd";
+import { Alert, Spin, message } from "antd";
 import { useNavigate } from "react-router-dom";
 
 export interface ScheduleProps {
@@ -21,7 +21,7 @@ export interface ScheduleProps {
 }
 
 export const Page = () => {
-    const [mode, setMode] = useState<DisplayMode>("week");
+    const [mode, setMode] = useState<DisplayMode>();
     const [date, setDate] = useState<Dayjs>(dayjs());
     const { self } = useAppState();
     const navigate = useNavigate();
@@ -35,18 +35,20 @@ export const Page = () => {
         if (self === null) {
             console.error("not logged in");
             // alert("请先登录");
-            // navigate("/login");
+            message.info("Please login to view schedule");
+            navigate("/login");
         }
         else {
             setJwt(self.jwt);
         }
-    }, [self, setJwt]);
+    }, [self, setJwt, navigate]);
 
     useEffect(() => {
         if (errMsg === "invalid JWT" || errMsg === "token expired") {
             console.error("not logged in");
             // alert("请先登录");
-            // navigate("/login");
+            message.info("Login expired");
+            navigate("/login");
         }
     }, [errMsg, navigate]);
 
@@ -64,7 +66,7 @@ export const Page = () => {
                     />
                 }
             </div>
-            {mode === "day" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
+            {(mode === "day" || !mode) && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
                 <DaySchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} setOpenAddBar={setOpenAddBar} setEventBase={setEventBase} />
             </div>}
             {mode === "week" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
@@ -73,7 +75,7 @@ export const Page = () => {
             {mode === "month" && <div style={{ justifyContent: "center", display: "flex", marginTop: "2vh", marginBottom: "20vh" }}>
                 <MonthSchedule date={date} setDate={setDate} jwt={jwt} setErrMsg={setErrMsg} setLoading={setLoading} setOpenAddBar={setOpenAddBar} setEventBase={setEventBase} />
             </div>}
-            <ModeSelect mode={mode} setMode={setMode} date={date} setDate={setDate} />
+            <ModeSelect mode={mode ? mode : "day"} setMode={setMode} date={date} setDate={setDate} />
             <AddSchedule date={date} setLoading={setLoading} jwt={jwt} open={openAddBar} setOpen={setOpenAddBar} eventBase={eventBase} />
         </div>
     </Spin>;

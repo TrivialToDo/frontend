@@ -10,7 +10,7 @@ import { DisplayMode } from "../../data/interface";
 
 interface ModeSelectProps {
     mode: DisplayMode;
-    setMode: React.Dispatch<React.SetStateAction<DisplayMode>>;
+    setMode: React.Dispatch<React.SetStateAction<DisplayMode | undefined>>;
     date: Dayjs;
     setDate: React.Dispatch<React.SetStateAction<Dayjs>>;
 }
