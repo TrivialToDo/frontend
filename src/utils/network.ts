@@ -51,7 +51,7 @@ export const request = async <T>(
     headers["Authorization"] = `Bearer ${auth}`;
   }
 
-  if (method === "POST") {
+  if (method === "POST" || method === "DELETE") {
     let tk;
     const tkResp = await fetch('/api/token', { method: "GET" });
 
