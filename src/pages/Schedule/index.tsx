@@ -42,13 +42,15 @@ export const Page = () => {
     const [loadShot, setLoadShot] = useState<string>();
 
     useEffect(() => {
-        if (_mode === null || (_mode !== "day" && _mode !== "week" && _mode !== "month")) {
+        if (_mode !== null && (_mode !== "day" && _mode !== "week" && _mode !== "month")) {
+            console.error("Invalid mode param");
             throw new Error("invalid search param");
         }
-        else {
+        else if (_mode !== null) {
             setMode(_mode);
         }
         if (_date !== null && !dayjs(_date).isValid()) {
+            console.error("Invalid date param");
             throw new Error("invalid search param");
         }
         else if (_date !== null) {
@@ -87,7 +89,7 @@ export const Page = () => {
             visitShot();
             setShot(false);
         }
-    }, [setShot]);
+    }, [shot, setShot]);
 
     useEffect(() => {
         if (self === null) {
