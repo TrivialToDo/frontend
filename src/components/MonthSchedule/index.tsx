@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { ScheduleProps } from "../../pages/Schedule";
-import { MockMonthEvents, strDate } from "../../utils/date";
+import { MockMonthEvents, getFirst, strDate } from "../../utils/date";
 import { Event } from "../../data/interface";
 import { Card, Button, Calendar } from "antd";
 import { CaretLeftFilled, CaretRightFilled } from "@ant-design/icons";
@@ -25,7 +25,8 @@ export const MonthSchedule = (props: ScheduleProps) => {
             setEventList(MockMonthEvents(str));
         }
         else {
-            getEventList(str, props.jwt, "month", setLoading, setEventList, props.setErrMsg);
+            const fir = getFirst(date);
+            getEventList(strDate(fir), props.jwt, "month", setLoading, setEventList, props.setErrMsg);
         }
     }, [date, props.jwt, props.setErrMsg]);
 
