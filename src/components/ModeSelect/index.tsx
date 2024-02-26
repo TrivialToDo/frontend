@@ -1,6 +1,6 @@
 // switch for day/week mode, displays calendar
 
-import { FloatButton, Calendar, theme, CalendarProps } from "antd";
+import { FloatButton, Calendar, theme, CalendarProps, Tooltip } from "antd";
 import { CalendarOutlined } from "@ant-design/icons";
 
 import { Dayjs } from "dayjs";
@@ -10,7 +10,7 @@ import { DisplayMode } from "../../data/interface";
 
 interface ModeSelectProps {
     mode: DisplayMode;
-    setMode: React.Dispatch<React.SetStateAction<DisplayMode>>;
+    setMode: React.Dispatch<React.SetStateAction<DisplayMode | undefined>>;
     date: Dayjs;
     setDate: React.Dispatch<React.SetStateAction<Dayjs>>;
 }
@@ -51,47 +51,54 @@ export const ModeSelect = (props: ModeSelectProps) => {
         props.setMode(mode);
     };
     return <>
-        <FloatButton.Group
-            trigger="click"
-            type="primary"
-            shape="circle"
-            style={{ left: 50 }}
-            icon={<CalendarOutlined />}
-        // tooltip="选择日期"
-        >
-            <CalendarCard
-                setMode={props.setMode}
-                setDate={props.setDate}
-                date={props.date}
-                mode={props.mode}
+        <Tooltip title="Select Date" placement="top" arrow={false}>
+            <FloatButton.Group
+                trigger="click"
+                type="primary"
+                shape="circle"
+                style={{ left: 50 }}
+                icon={<CalendarOutlined />}
+            // tooltip="选择日期"
+            >
+                <CalendarCard
+                    setMode={props.setMode}
+                    setDate={props.setDate}
+                    date={props.date}
+                    mode={props.mode}
+                />
+            </FloatButton.Group>
+        </Tooltip>
+        <Tooltip title="Day Mode" placement="top" arrow={false}>
+            <FloatButton
+                shape="circle"
+                style={{ left: 120 }}
+                icon={false}
+                description="D"
+                onClick={() => select("day")}
+                type={props.mode === "day" ? "primary" : "default"}
             />
-        </FloatButton.Group>
-        <FloatButton
-            shape="circle"
-            style={{ left: 120 }}
-            icon={false}
-            description="D"
-            onClick={() => select("day")}
-            type={props.mode === "day" ? "primary" : "default"}
-        // tooltip="日期视图"
-        />
-        <FloatButton
-            shape="circle"
-            style={{ left: 190 }}
-            icon={false}
-            description="W"
-            onClick={() => select("week")}
-            type={props.mode === "week" ? "primary" : "default"}
-        // tooltip="星期视图"
-        />
-        <FloatButton
-            shape="circle"
-            style={{ left: 260 }}
-            icon={false}
-            description="M"
-            onClick={() => select("month")}
-            type={props.mode === "month" ? "primary" : "default"}
-        // tooltip="月份视图"
-        />
+        </Tooltip>
+        <Tooltip title="Week Mode" placement="top" arrow={false}>
+            <FloatButton
+                shape="circle"
+                style={{ left: 190 }}
+                icon={false}
+                description="W"
+                onClick={() => select("week")}
+                type={props.mode === "week" ? "primary" : "default"}
+            // tooltip="星期视图"
+            />
+        </Tooltip>
+        <Tooltip title="Month Mode" placement="top" arrow={false}>
+            <FloatButton
+                shape="circle"
+                style={{ left: 260 }}
+                icon={false}
+                description="M"
+                onClick={() => select("month")}
+                type={props.mode === "month" ? "primary" : "default"}
+            // tooltip="月份视图"
+            />
+        </Tooltip>
     </>;
 }

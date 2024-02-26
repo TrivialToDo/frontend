@@ -1,4 +1,5 @@
 import { OkResp, Resp } from "../data/interface";
+// import { useAppState } from "../state";
 
 export const isOk = <T>(resp: Resp<T>): resp is OkResp<T> => 200 <= resp.status && resp.status < 300;
 
@@ -50,6 +51,26 @@ export const request = async <T>(
     headers["Authorization"] = `Bearer ${auth}`;
   }
 
+  if (method === "POST" || method === "DELETE") {
+    let tk;
+    const tkResp = await fetch('/api/token', { method: "GET" });
+
+    let tkRes;
+    try {
+      tkRes = await tkResp.json();
+      tk = tkRes.data.token;
+    } catch (e) {
+      // res = null;
+      console.error(e);
+    }
+
+    // console.log(tkRes);
+    console.log("csrf-token", tk);
+
+    headers["X-CSRFToken"] = tk;
+  }
+  console.log(headers);
+
   const response = await fetch(url, { method, headers, body });
 
   let res;
@@ -61,6 +82,6 @@ export const request = async <T>(
 
   return {
     status: response.status,
-    data: res,
+    data: res.data,
   };
 };

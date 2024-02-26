@@ -52,16 +52,19 @@ export const WeekSchedule = (props: ScheduleProps) => {
                 const list: Event[] = [];
                 for (let j = 0; j < eventList[i].length; j += 1) {
                     const e = eventList[i][j];
-                    if (e.timeStart.Hour === idx ||
-                        e.timeStart.Hour <= idx && e.timeEnd && e.timeEnd.Hour >= idx) {
+                    if (e.timeStart.hour === idx ||
+                        e.timeStart.hour <= idx && e.timeEnd && e.timeEnd.hour >= idx) {
                         list.push(e);
                     }
                 }
-                tmp[i] = <EventThumbnail events={list} hour={idx} />;
+                tmp[i] = <EventThumbnail events={list} hour={idx} jwt={props.jwt}
+                    setLoading={props.setLoading}
+                    setAddBarOpen={props.setOpenAddBar}
+                    setEventBase={props.setEventBase} />;
             }
             return tmp;
         }));
-    }, [eventList]);
+    }, [eventList, props]);
 
     const onChangeWeek = (type: "forward" | "backward") => {
         if (type === "forward") {
@@ -102,7 +105,7 @@ export const WeekSchedule = (props: ScheduleProps) => {
                         type="text"
                         onClick={() => onChangeWeek("backward")}
                     />
-                    <span>{`${props.date.year()} ${MonthStr[props.date.month() + 1]}`}</span>
+                    <div style={{ fontSize: "1.1rem" }}>{`${props.date.year()} ${MonthStr[props.date.month() + 1]}`}</div>
                     <Button
                         icon={<CaretRightFilled />}
                         type="text"
@@ -110,12 +113,13 @@ export const WeekSchedule = (props: ScheduleProps) => {
                     />
                 </div>
             }
-            style={{ width: "80%", overflow: "overlay" }}
+            style={{ width: "70%", overflow: "overlay" }}
             type="inner"
             loading={loading}
             bodyStyle={{ textAlign: "center", width: "100%" }}
+            id="schedule-table"
         >
-            <div style={{ marginTop: "5%", marginBottom: "5%", marginLeft: "10%", marginRight: "10%" }}>
+            <div style={{ marginTop: "5%", marginBottom: "5%", marginLeft: "5%", marginRight: "5%", textAlign: "center", justifyContent: "center" }}>
                 <Table
                     columns={columns}
                     dataSource={data}

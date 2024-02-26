@@ -45,8 +45,9 @@ export const Page = () => {
 
     useEffect(() => {
         if (self !== null) {
-            console.log(self);
-            navigate("/schedule");
+            console.log("previous logged in:", self);
+            // navigate("/schedule");
+            setSelf(null);
         }
         if (token !== null) {
             console.log("token=", token);
@@ -70,7 +71,9 @@ export const Page = () => {
             />
             {
                 errMsg && <Alert
-                    message={errMsg}
+                    // size="large"
+                    style={{ width: "50%", marginTop: "1rem" }}
+                    message={`- ${errMsg}`}
                     type="info"
                 />
             }

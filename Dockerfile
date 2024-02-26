@@ -22,4 +22,6 @@ FROM nginx:1.23.3-alpine-slim
 COPY ./nginx/trivialtodo.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /opt/trivialtodo/dist /usr/share/nginx/trivialtodo
 
-EXPOSE 80
+EXPOSE 8080
+
+CMD ["nginx", "-g", "daemon off;"]

@@ -30,5 +30,32 @@ export const getEventList = async (
     setLoading(false);
 };
 
+export const deleteEvent = async (
+    hash: string,
+    jwt: string,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    setErrMsg: React.Dispatch<React.SetStateAction<string | undefined>>,
+    setSelect: React.Dispatch<React.SetStateAction<Event | undefined>>,
+    setBloading: React.Dispatch<React.SetStateAction<boolean>>,
+) => {
+    setLoading(true);
+    setBloading(true);
+    console.log("delete event:", hash);
+    const resp = await request(
+        `/api/event/${hash}`,
+        "DELETE", undefined, jwt
+    );
 
+    setSelect(undefined);
+
+    if (!isOk(resp)) {
+        setErrMsg(resp.data.msg);
+        setLoading(false);
+        setBloading(false);
+        return;
+    }
+
+    setLoading(false);
+    setBloading(false);
+};
 
